@@ -1,0 +1,463 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>loa Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>loa</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>loa</strong></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="examples/google.html">google</a></li>
+  <li><a href="examples/token_transport.html">token_transport</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>loa</code></h1>
+<p>OAuth2 Client Implementation.</p>
+<p>
+ OAuth 2.0 protocol implementation based on sanction (https://github.com/demianbrecht/sanction).</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: 2014</li>
+        <li><strong>Release</strong>: 0.1.0</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: Paul Lewis</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#new">new ()</a></td>
+	<td class="summary">Create new OAuth2 client.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#auth_uri">auth_uri ()</a></td>
+	<td class="summary">Generate an authorization URI.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#build_request">build_request ()</a></td>
+	<td class="summary">Build an http request.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#request_token">request_token ()</a></td>
+	<td class="summary">Request an authorization token.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#request">request ()</a></td>
+	<td class="summary">Request data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#refresh">refresh ()</a></td>
+	<td class="summary">Refresh the authorization token.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#_catch_redirect">_catch_redirect ()</a></td>
+	<td class="summary">Catch a redirect.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "new"></a>
+    <strong>new (auth_endpoint, token_endpoint, resource_endpoint, client_id, client_secret[, token_transport])</strong>
+    </dt>
+    <dd>
+    Create new OAuth2 client.
+ Returns a new OAuth2 client for use in authorizing a user against an OAuth2
+ authorization endpoint and requesting data from a relevent resource endpoint.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">auth_endpoint</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The Authorization URL. This endpoint will be
+ used to generate the authorization URI return by loa.auth_uri.
+        </li>
+        <li><span class="parameter">token_endpoint</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The Token URL. This endpoint will be used to
+ to retrieve the authorization token when loa.request_token is called.
+        </li>
+        <li><span class="parameter">resource_endpoint</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The resource endpoint. This URL will be used
+ when requesting resources from the provider.
+        </li>
+        <li><span class="parameter">client_id</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The client ID given to you by the provider.
+        </li>
+        <li><span class="parameter">client_secret</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the client secret given to you by the provider.
+ This should not be given to any one, ever.
+        </li>
+        <li><span class="parameter">token_transport</span>
+            <span class="types"><span class="type">function</span></span>
+         A function that will receive a url and
+ insert a token in the necessary manner in any http requests. Default is to
+ add "Authorization: Bearer {token}" to the HTTP headers. See the examples for
+ more info.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">userdata</span></span>
+        The new loa client object.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "auth_uri"></a>
+    <strong>auth_uri (self, redirect_uri, scope[, state[, options]])</strong>
+    </dt>
+    <dd>
+    Generate an authorization URI.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+
+        </li>
+        <li><span class="parameter">redirect_uri</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The URL where the provider should return the user
+ after authentication. Usually this redirect will have the authorization
+ code that will be needed to retrieve an authorization token.
+        </li>
+        <li><span class="parameter">scope</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         A string containing the scopes that should be requested
+ from the provider. Typically comma or space delimitted.
+        </li>
+        <li><span class="parameter">state</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The `state` parameter to pass for authorization. If
+ the provider follows the OAuth 2.0 spec, this will be returned to your
+ `redirect_uri` after authorization. Generally used for CSRF protection.
+        </li>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of any query paramaters that should be
+ included in the authorization URL. i.e.: ?auth_type=offline can be added to
+ the URI by providing this table: {auth_type="offline"}. All keys and values
+ in this table are automatically URL-Encoded.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The generated authorization endpoint to where the user should
+ be directed to provide authorization.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "build_request"></a>
+    <strong>build_request (url[, data[, method[, headers]]])</strong>
+    </dt>
+    <dd>
+    Build an http request.
+ Construct an http request table to be provided to socket.http.request. Must
+ be called when providing a token_transport to loa.new.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">url</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The base url for the request.
+        </li>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table representing the POST data of this request
+ (ifthere is any). i.e.: auth_type=offline can be added to the URI by
+ providing this table: {auth_type="offline"}. All keys and values in this
+ table are automatically URL-Encoded.
+        </li>
+        <li><span class="parameter">method</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         HTTP method to be used in the request. Defaults to
+ "GET" if data is nil, or "POST" if it is not.
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table representing the headers to be included in
+ thisrequest. i.e.: "Content-Length: 8" can be included by providing this
+ table: {["Content-Length"]=8}. Note that Content-Length and Content-type will
+ be automatically provided if data is not nil.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        req A table to provide socket.http.request</li>
+        <li>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        rsp A table that will hold the response generated by the
+ request.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "request_token"></a>
+    <strong>request_token (self, parser, redirect_uri[, options])</strong>
+    </dt>
+    <dd>
+    Request an authorization token.
+ Sends a request to the token endpoint. After success, the token will be a
+ field of the loa object (access_token), and will be automatically included
+ in data requests via loa.request.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+
+        </li>
+        <li><span class="parameter">parser</span>
+            <span class="types"><span class="type">function</span></span>
+         A function that can parse the information returned
+ by the provider. This is typically json, though it varies by provider.
+        </li>
+        <li><span class="parameter">redirect_uri</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Some providers require this parameter in a
+ request. You can include it as this argument or in the options table.
+        </li>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of any query paramaters that should be
+ included in the authorization URL. i.e.: ?auth_type=offline can be added to
+ the URI by providing this table: {auth_type="offline"}. All keys and values
+ in this table are automatically URL-Encoded.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">boolean</span></span>
+        true if the http request was completed.</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        the status code returned by the token endpoint.</li>
+        <li>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        headers included in the response message.</li>
+        <li>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the full status code and message returned by the endpoint.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "request"></a>
+    <strong>request (self, url[, method[, data[, headers[, parser]]]])</strong>
+    </dt>
+    <dd>
+    Request data.
+ Requests and returns user data from the resource endpoint.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+
+        </li>
+        <li><span class="parameter">url</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Appended to the end of the resource_endpoint.
+        </li>
+        <li><span class="parameter">method</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         HTTP method to be used in the request. Defaults to
+ "GET" if data is nil, or "POST" if it is not.
+        </li>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table representing the POST data of this request
+ (ifthere is any). i.e.: auth_type=offline can be added to the URI by
+ providing this table: {auth_type="offline"}. All keys and values in this
+ table are automatically URL-Encoded.
+        </li>
+        <li><span class="parameter">headers</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table representing the headers to be included in
+ thisrequest. i.e.: "Content-Length: 8" can be included by providing this
+ table: {["Content-Length"]=8}. Note that Content-Length and Content-type will
+ be automatically provided if data is not nil.
+        </li>
+        <li><span class="parameter">parser</span>
+            <span class="types"><span class="type">function</span></span>
+         A function that can parse the information
+ returnedby the provider. This is typically json, though it varies by
+ provider.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "refresh"></a>
+    <strong>refresh (parser, options)</strong>
+    </dt>
+    <dd>
+    Refresh the authorization token.
+ After receiving an initial auth token, this function will send a refresh
+ token request.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parser</span>
+
+        </li>
+        <li><span class="parameter">options</span>
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#request_token">loa.request_token</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "_catch_redirect"></a>
+    <strong>_catch_redirect (redirect_uri[, body[, timeout=2[, hardtimeout=5]]])</strong>
+    </dt>
+    <dd>
+    Catch a redirect.
+ This is largely a helper function for if you are not actually running a
+ server. This will listen on a socket until it receives data, and then return
+ that data (likely an http request).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">redirect_uri</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The redirect URI provided in an earlier call to
+ loa.auth_uri.
+        </li>
+        <li><span class="parameter">body</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         An optional HTML document that will be returned upon
+ receiving the redirect. A default will be used if not provided.
+        </li>
+        <li><span class="parameter">timeout</span>
+            <span class="types"><span class="type">number</span></span>
+         Timeout value used for the server socket.
+         (<em>default</em> 2)
+        </li>
+        <li><span class="parameter">hardtimeout</span>
+            <span class="types"><span class="type">number</span></span>
+         If a redirect has not been received in this
+ many seconds. The function will return. Use math.huge to disable.
+         (<em>default</em> 5)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        captured data.</li>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+        if an error.</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+        if no error.</li>
+        <li>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        error message.</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
